@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "oJwp0IPtDjg=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Nadia\\Documents\\university\\BD\\Zlagoda\\Zlagoda.Server\\Zlagoda.Server.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Nadia\\.nuget\\packages\\microsoft.aspnetcore.spaproxy\\8.0.6\\microsoft.aspnetcore.spaproxy.8.0.6.nupkg.sha512"
+  ],
+  "logs": []
+}
