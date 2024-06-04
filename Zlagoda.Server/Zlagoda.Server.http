@@ -1,6 +1,6 @@
-@Zlagoda.Server_HostAddress = http://localhost:5186
+@Zlagoda.Server_HostAddress = http://localhost:5219
 
-GET {{Zlagoda.Server_HostAddress}}/weatherforecast/
+GET {{Zlagoda.Server_HostAddress}}/
 Accept: application/json
 
 ###

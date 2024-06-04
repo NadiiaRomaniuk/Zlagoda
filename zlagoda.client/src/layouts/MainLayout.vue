@@ -1,106 +1,129 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hhh LpR fff">
+    <q-header>
       <q-toolbar>
         <q-btn
           flat
           dense
           round
-          icon="menu"
+          :icon="fasBars"
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+        <q-toolbar-title> Zlagoda </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-toggle
+          v-model="darkSkin"
+          :unchecked-icon="fasSun"
+          :checked-icon="fasMoon"
+          color="black"
+          keep-color
+        />
       </q-toolbar>
     </q-header>
 
     <q-drawer
-      v-model="leftDrawerOpen"
+      v-model="drawerOpen"
       show-if-above
       bordered
+      :mini-to-overlay="miniEnable"
+      :mini="miniEnable && miniState"
+      class="drawer"
+      :width="200"
+      @mouseover="miniState = false"
+      @mouseout="miniState = true"
     >
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+        <q-item to="/" exact v-ripple>
+          <q-item-section avatar>
+            <q-icon :name="fasHouse" />
+          </q-item-section>
+          <q-item-section avatar>
+            <q-item-label>Home</q-item-label>
+          </q-item-section>
+        </q-item>
 
-        <EssentialLink
-          v-for="link in linksList"
-          :key="link.title"
-          v-bind="link"
-        />
+        <q-item to="/test" exact v-ripple>
+          <q-item-section avatar>
+            <q-icon :name="fasFlask" />
+          </q-item-section>
+          <q-item-section avatar>
+            <q-item-label>Test</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
+      <q-btn
+        flat
+        @click="miniChange"
+        v-if="!$q.platform.is.mobile"
+        align="right"
+        :icon="fasAngleLeft"
+        class="mini-button full-width absolute-bottom-left"
+        :class="miniEnable ? 'mini-button--rotated' : ''"
+      />
     </q-drawer>
 
     <q-page-container>
       <router-view />
+      <q-page-scroller
+        position="bottom-right"
+        :scroll-offset="150"
+        :offset="$q.screen.name === 'xs' ? [9, 9] : [18, 18]"
+      >
+        <q-btn fab-mini :icon="fasAngleUp" color="accent" />
+      </q-page-scroller>
     </q-page-container>
   </q-layout>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
+import { ref, watch } from "vue";
+import { useQuasar } from "quasar";
+import { useLocalStore } from "stores/localStore";
+import { storeToRefs } from "pinia";
+import {
+  fasBars,
+  fasHouse,
+  fasAngleUp,
+  fasAngleLeft,
+  fasSun,
+  fasMoon,
+  fasFlask,
+} from "@quasar/extras/fontawesome-v6";
 
 defineOptions({
-  name: 'MainLayout'
-})
+  name: "MainLayout",
+});
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
+const $q = useQuasar();
+const miniState = ref(true);
+const localStore = useLocalStore();
+const { dark, miniEnable } = storeToRefs(localStore);
+const drawerOpen = ref(false);
+const darkSkin = ref($q.dark.isActive);
 
-const leftDrawerOpen = ref(false)
+const toggleLeftDrawer = () => (drawerOpen.value = !drawerOpen.value);
+const miniChange = () =>
+  (miniEnable.value =
+    miniEnable.value === undefined ? true : !miniEnable.value);
 
-function toggleLeftDrawer () {
-  leftDrawerOpen.value = !leftDrawerOpen.value
-}
+watch(darkSkin, () => {
+  dark.value = darkSkin.value;
+  $q.dark.set(darkSkin.value);
+});
 </script>
+
+<style lang="sass">
+.mini-button .q-icon
+  position: relative
+  transition: transform .3s
+
+.mini-button--rotated .q-icon
+  transform: rotate(180deg)
+
+.drawer
+  background-color: #eee
+  .q-dark &
+    background-color: #222
+</style>

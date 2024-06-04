@@ -1,6 +1,6 @@
-# Quasar App (zlagoda-client)
+# Zlagoda (zlagoda-client)
 
-A Quasar Project
+Zlagoda
 
 ## Install the dependencies
 ```bash
