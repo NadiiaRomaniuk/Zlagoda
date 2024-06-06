@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Zlagoda.Server.Controllers;
 [ApiController]
-//[Authorize(Roles = "")]
+[Authorize(Roles = "Manager")]
 [Route("api/[controller]")]
 public class TestController : ControllerBase
 {

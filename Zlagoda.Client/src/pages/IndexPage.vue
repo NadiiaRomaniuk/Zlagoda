@@ -17,6 +17,13 @@ defineOptions({
 const testResult = ref("Wait...");
 
 const getTest = () => {
+  // api
+  //   .post("auth/login", { login: "John", password: "123" })
+  //   .then((res) => {
+  //     console.log(res);
+  //     token.value = res.headers["authorization"];
+  //     console.log(`token: ${token.value}`);
+
   api
     .get("test")
     .then((result) => {
@@ -26,6 +33,12 @@ const getTest = () => {
       testResult.value = error.message;
       console.error(error.message);
     });
+
+  // })
+  // .catch((error) => {
+  //   testResult.value = error.message;
+  //   console.error(error.message);
+  // });
 };
 
 getTest();

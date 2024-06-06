@@ -19,6 +19,7 @@
     "pinia-plugin-persist": "^1.0.0",
     "quasar": "^2.16.0",
     "vue": "^3.4.18",
+    "vue-auth3": "^1.0.10",
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
