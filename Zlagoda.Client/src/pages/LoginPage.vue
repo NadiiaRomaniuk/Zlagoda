@@ -17,7 +17,7 @@
           <q-form @submit="login" :disable="wait">
             <q-input
               v-model="username"
-              label="Email"
+              label="Login"
               :disable="wait"
               autofocus="autofocus"
             >
@@ -78,7 +78,7 @@
 
 <script setup>
 import { ref, nextTick } from "vue";
-import { Notify } from "quasar";
+import notify from "../notices";
 import { useAuth } from "vue-auth3";
 import {
   fasRightToBracket,
@@ -108,19 +108,17 @@ const login = () => {
     .login({
       data: { Login: username.value, Password: password.value },
       staySignedIn: remember.value,
+      redirect: "/",
+      fetchUser: false,
     })
     .then(
-      (result) => {
-        const user = result.data;
-        user.roles = [user.role];
-        auth.user(user);
-        auth.remember(user.login);
-        //updateUser(auth.token(), user);
+      () => {
+        auth.remember(auth.user().name);
       },
       (error) => {
         if (error.request?.status === 401)
-          Notify.create("Incorrect login or password");
-        else Notify.create(`Login error ${error.request?.result}`);
+          notify.error("Incorrect login or password");
+        else notify.error(`Login error ${error.request?.result}`);
         console.log("Incorrect password", error);
         shake.value = true;
         wait.value = false;

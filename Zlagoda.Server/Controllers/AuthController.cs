@@ -6,7 +6,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using Zlagoda.Server.Database;
 using Zlagoda.Server.Models;
+using System.Security.Cryptography;
 
 namespace Zlagoda.Server.Controllers;
 [Route("api/[controller]")]
@@ -15,24 +17,37 @@ public class AuthController : ControllerBase
 {
     private readonly JwtOptions _jwtOptions;
     private readonly ILogger<TestController> _logger;
+    private readonly Db _db;
 
-    public AuthController(IOptions<JwtOptions> jwtOptions, ILogger<TestController> logger)
+    public AuthController(IOptions<JwtOptions> jwtOptions, ILogger<TestController> logger, Db db)
     {
         _jwtOptions = jwtOptions.Value;
         _logger = logger;
+        _db = db;
     }
 
-    private async Task<string?> CreateToken(string user, string role)
+    public static string GetHash(string password, string salt)
+    {
+        using (SHA1 sha1 = SHA1.Create())
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(password + salt);
+            byte[] hashBytes = sha1.ComputeHash(bytes);
+            StringBuilder hexString = new StringBuilder();
+            foreach (byte b in hashBytes)
+                hexString.Append(b.ToString("x2"));
+            return hexString.ToString();
+        }
+    }
+
+    private async Task<string?> CreateToken(UserLoginModel user)
     {
         try
         {
-            if (_jwtOptions == null)
-                _logger.LogError("JwtOptions is null");
-            _logger.LogInformation($"Key: {_jwtOptions.Key}");
             var claims = new List<Claim>
             {
-                new Claim("uid", user),
-                new Claim("roles", role)
+                new Claim("uid", user.Login),
+                new Claim("name", user.Name),
+                new Claim("roles", user.Roles[0])
             };
             var now = DateTime.UtcNow;
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtOptions.Key));
@@ -56,18 +71,31 @@ public class AuthController : ControllerBase
     {
         if (loginPass == null || string.IsNullOrEmpty(loginPass.Login) || string.IsNullOrEmpty(loginPass.Password))
             return Unauthorized();
-        var user = loginPass.Login == "John" && loginPass.Password == "123" ||
-            loginPass.Login == "Kate" && loginPass.Password == "321" ? loginPass.Login : null;
-        if (user != null)
+
+        var user = await _db.GetEmployee(loginPass.Login);
+        if (user != null && user.Password == GetHash(loginPass.Password, _jwtOptions.Key))
         {
-            var tokenStr = await CreateToken(user, user == "John" ? "Manager" : "Cashier");
-            Response.Headers.Append(HttpRequestHeader.Authorization.ToString(), tokenStr);
-            return Ok(new UserLoginModel
+            var model = new UserLoginModel
             {
-                Login = user,
-                FirstName = user,
-                Role = user == "John" ? "Manager" : "Cashier"
-            });
+                Login = loginPass.Login,
+                Name = $"{user.Surname} {user.Name}",
+                Roles = [ user.Role ]
+            };
+            var tokenStr = await CreateToken(model);
+            Response.Headers.Append(HttpRequestHeader.Authorization.ToString(), tokenStr);
+            return Ok(model);
+        }
+        else if (await _db.GetEmployeesCount() == 0 && loginPass.Login == "admin" && loginPass.Password == "admin")
+        {
+            var model = new UserLoginModel
+            {
+                Login = "admin",
+                Name = "Admin",
+                Roles = [ "manager" ]
+            };
+            var tokenStr = await CreateToken(model);
+            Response.Headers.Append(HttpRequestHeader.Authorization.ToString(), tokenStr);
+            return Ok(model);
         }
         return Unauthorized();
     }
@@ -89,35 +117,42 @@ public class AuthController : ControllerBase
             ValidateIssuerSigningKey = true,
             ValidIssuer = _jwtOptions.Issuer,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtOptions.Key)),
-            ValidateLifetime = false,
-            //ValidateLifetime = true,
-            //LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken,
-            //    TokenValidationParameters validationParameters) =>
-            //{
-            //    var clonedParameters = validationParameters.Clone();
-            //    clonedParameters.LifetimeValidator = null;
-            //    var exp = expires?.Add(TimeSpan.FromDays(_jwtOptions.RefreshExpiresDays));
-            //    Validators.ValidateLifetime(notBefore, exp, securityToken, clonedParameters);
-            //    return true;
-            //}
+            ValidateLifetime = true,
+            LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken,
+                TokenValidationParameters validationParameters) =>
+            {
+                var clonedParameters = validationParameters.Clone();
+                clonedParameters.LifetimeValidator = null;
+                var exp = expires?.Add(TimeSpan.FromDays(_jwtOptions.RefreshExpiresDays));
+                Validators.ValidateLifetime(notBefore, exp, securityToken, clonedParameters);
+                return true;
+            }
         };
-        string? user = null;
+        string? login = null;
+        string? name = null;
         string? role = null;
         try
         {
             var principal = new JwtSecurityTokenHandler().ValidateToken(token, tokenValidationParameters, out var securityToken);
-            user = principal.Claims.SingleOrDefault(c => c.Type == "uid")?.Value;
+            name = principal.Claims.SingleOrDefault(c => c.Type == "name")?.Value;
+            login = principal.Claims.SingleOrDefault(c => c.Type == "uid")?.Value;
             role = principal.Claims.SingleOrDefault(c => c.Type.EndsWith("role"))?.Value;
         }
         catch(Exception ex)
         {
             _logger.LogError(ex, "Refresh error");
         }
-        if (user == null)
+        if (login == null || role == null)
         {
             return Unauthorized();
         }
-        var tokenStr = await CreateToken(user, role);
+        var model = new UserLoginModel
+        {
+            Login = login,
+            Name = name,
+            Roles = [ role ]
+        };
+        var tokenStr = await CreateToken(model);
         Response.Headers.Append(HttpRequestHeader.Authorization.ToString(), tokenStr);
 
         return Ok();

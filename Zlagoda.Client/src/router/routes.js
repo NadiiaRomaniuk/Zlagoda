@@ -14,6 +14,11 @@ const routes = [
         meta: { auth: false },
       },
       {
+        path: "/employees",
+        component: () => import("pages/EmployeesPage.vue"),
+        meta: { auth: "manager" },
+      },
+      {
         path: "/test",
         component: () => import("pages/TestPage.vue"),
         meta: { auth: true },
@@ -21,12 +26,17 @@ const routes = [
       {
         path: "/manager",
         component: () => import("pages/ManagerPage.vue"),
-        meta: { auth: ["Manager"] },
+        meta: { auth: ["manager"] },
       },
       {
         path: "/cashier",
         component: () => import("pages/CashierPage.vue"),
-        meta: { auth: ["Cashier"] },
+        meta: { auth: ["cashier"] },
+      },
+      {
+        path: "/forbidden",
+        component: () => import("pages/CashierPage.vue"),
+        meta: { auth: ["cashier"] },
       },
     ],
   },

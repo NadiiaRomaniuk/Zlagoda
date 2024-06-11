@@ -23,9 +23,10 @@ const updateUser = (token) => {
     const payload = JSON.parse(
       atob(token.substring(token.indexOf(".") + 1, token.lastIndexOf(".")))
     );
-    auth.remember(payload.uid);
+    auth.remember(payload.name);
     auth.user({
       roles: [payload.roles],
+      name: payload.name,
       login: payload.uid,
     });
   }

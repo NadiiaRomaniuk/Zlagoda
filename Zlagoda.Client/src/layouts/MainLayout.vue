@@ -55,6 +55,15 @@
           </q-item-section>
         </q-item>
 
+        <q-item to="/employees" exact v-ripple v-if="auth.check('manager')">
+          <q-item-section avatar>
+            <q-icon :name="fasUserGroup" />
+          </q-item-section>
+          <q-item-section avatar>
+            <q-item-label>Employees</q-item-label>
+          </q-item-section>
+        </q-item>
+
         <q-item to="/test" exact v-ripple v-if="auth.check()">
           <q-item-section avatar>
             <q-icon :name="fasFlask" />
@@ -64,7 +73,7 @@
           </q-item-section>
         </q-item>
 
-        <q-item to="/manager" exact v-ripple v-if="auth.check(['Manager'])">
+        <q-item to="/manager" exact v-ripple v-if="auth.check(['manager'])">
           <q-item-section avatar>
             <q-icon :name="fasBriefcase" />
           </q-item-section>
@@ -73,7 +82,7 @@
           </q-item-section>
         </q-item>
 
-        <q-item to="/cashier" exact v-ripple v-if="auth.check('Cashier')">
+        <q-item to="/cashier" exact v-ripple v-if="auth.check('cashier')">
           <q-item-section avatar>
             <q-icon :name="fasCashRegister" />
           </q-item-section>
@@ -105,7 +114,7 @@
     <q-page-container>
       <router-view />
       <q-page-scroller
-        position="bottom-right"
+        position="bottom-left"
         :scroll-offset="150"
         :offset="$q.screen.name === 'xs' ? [9, 9] : [18, 18]"
       >
@@ -117,11 +126,11 @@
 
 <script setup>
 import { ref, watch, computed } from "vue";
-import { useQuasar, Notify } from "quasar";
+import { useQuasar } from "quasar";
 import { useLocalStore } from "stores/localStore";
 import { storeToRefs } from "pinia";
-//import { auth } from "boot/auth";
 import { useAuth } from "vue-auth3";
+import notify from "../notices";
 import {
   fasBars,
   fasHouse,
@@ -134,6 +143,7 @@ import {
   fasBriefcase,
   fasRightToBracket,
   fasRightFromBracket,
+  fasUserGroup,
 } from "@quasar/extras/fontawesome-v6";
 
 defineOptions({
@@ -154,25 +164,8 @@ const miniChange = () =>
     miniEnable.value === undefined ? true : !miniEnable.value);
 
 const logout = () => {
-  $q.dialog({
-    title: "Logout",
-    class: "q-pa-sm",
-    message: "Are you sure?",
-    ok: {
-      color: "positive",
-      noCaps: true,
-      label: "OK",
-    },
-    cancel: {
-      color: "negative",
-      noCaps: true,
-      label: "Cancel",
-    },
-    persistent: true,
-    transitionShow: "flip-down",
-    transitionHide: "flip-up",
-  }).onOk(() => {
-    Notify.create("Logged out");
+  notify.confirm("Logout", "Are you sure?").onOk(() => {
+    notify.success("Logged out");
     auth.logout({
       makeRequest: false,
     });

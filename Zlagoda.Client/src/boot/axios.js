@@ -1,8 +1,5 @@
 import { boot } from "quasar/wrappers";
 import axios from "axios";
-//import { useLocalStore } from "stores/localStore";
-//import { storeToRefs } from "pinia";
-//import { useAuth } from "vue-auth3";
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -13,11 +10,7 @@ import axios from "axios";
 const api = axios.create({ baseURL: "/api" });
 
 export default boot(({ app }) => {
-  //  const localStore = useLocalStore(store);
-  //  const { token } = storeToRefs(localStore);
   const auth = app.config.globalProperties.$auth;
-
-  console.log("auth", auth.token());
 
   api.interceptors.request.use((config) => {
     if (auth && auth.token() !== null)

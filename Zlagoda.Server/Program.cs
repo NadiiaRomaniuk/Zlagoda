@@ -2,13 +2,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Zlagoda.Server.Database;
 using Zlagoda.Server.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtOptions = new JwtOptions();
 builder.Configuration.GetSection("JwtOptions").Bind(jwtOptions);
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
-
+builder.Services.AddTransient<Db>();
 //ILogger logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
 //logger.LogInformation($"PROGRAM {jwtOptions.Key} {jwtOptions.ClockSkewMinutes}");
 

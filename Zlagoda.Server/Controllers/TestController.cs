@@ -1,22 +1,27 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Zlagoda.Server.Database;
 
 namespace Zlagoda.Server.Controllers;
+
 [ApiController]
-[Authorize(Roles = "Manager")]
 [Route("api/[controller]")]
+[Authorize(Roles = "manager")]
 public class TestController : ControllerBase
 {
     private readonly ILogger<TestController> _logger;
+    private readonly Db _db;
 
-    public TestController(ILogger<TestController> logger)
+    public TestController(ILogger<TestController> logger, Db db)
     {
         _logger = logger;
+        _db = db;
     }
 
     [HttpGet]
-    public string Get()
+    public async Task<string> Get()
     {
-        return "Test OK";
+        var count = await _db.GetEmployeesCount();
+        return $"Test OK {count}";
     }
 }
