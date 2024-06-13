@@ -73,6 +73,15 @@
           </q-item-section>
         </q-item>
 
+        <q-item to="/product" exact v-ripple v-if="auth.check('manager')">
+          <q-item-section avatar>
+            <q-icon :name="fasList" />
+          </q-item-section>
+          <q-item-section avatar>
+            <q-item-label>Product</q-item-label>
+          </q-item-section>
+        </q-item>
+
         <q-item clickable="" v-ripple v-if="auth.check()" @click="logout">
           <q-item-section avatar>
             <q-icon :name="fasRightFromBracket" />

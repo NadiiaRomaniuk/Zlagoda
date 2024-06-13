@@ -228,7 +228,7 @@ WHERE id_employee = @id_employee";
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Db.AddEmployee error");
+            _logger.LogError(ex, "Db.DeleteEmployee error");
             return false;
         }
     }

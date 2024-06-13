@@ -24,6 +24,11 @@ const routes = [
         meta: { auth: "manager" },
       },
       {
+        path: "/product",
+        component: () => import("pages/ProductPage.vue"),
+        meta: { auth: "manager" },
+      },
+      {
         path: "/forbidden",
         component: () => import("pages/ErrorForbidden.vue"),
       },
