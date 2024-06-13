@@ -64,30 +64,12 @@
           </q-item-section>
         </q-item>
 
-        <q-item to="/test" exact v-ripple v-if="auth.check()">
+        <q-item to="/category" exact v-ripple v-if="auth.check('manager')">
           <q-item-section avatar>
-            <q-icon :name="fasFlask" />
+            <q-icon :name="fasList" />
           </q-item-section>
           <q-item-section avatar>
-            <q-item-label>Test</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-item to="/manager" exact v-ripple v-if="auth.check(['manager'])">
-          <q-item-section avatar>
-            <q-icon :name="fasBriefcase" />
-          </q-item-section>
-          <q-item-section avatar>
-            <q-item-label>Manager</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-item to="/cashier" exact v-ripple v-if="auth.check('cashier')">
-          <q-item-section avatar>
-            <q-icon :name="fasCashRegister" />
-          </q-item-section>
-          <q-item-section avatar>
-            <q-item-label>Cashier</q-item-label>
+            <q-item-label>Category</q-item-label>
           </q-item-section>
         </q-item>
 
@@ -125,7 +107,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from "vue";
+import { ref, watch } from "vue";
 import { useQuasar } from "quasar";
 import { useLocalStore } from "stores/localStore";
 import { storeToRefs } from "pinia";
@@ -138,12 +120,10 @@ import {
   fasAngleLeft,
   fasSun,
   fasMoon,
-  fasFlask,
-  fasCashRegister,
-  fasBriefcase,
   fasRightToBracket,
   fasRightFromBracket,
   fasUserGroup,
+  fasList,
 } from "@quasar/extras/fontawesome-v6";
 
 defineOptions({

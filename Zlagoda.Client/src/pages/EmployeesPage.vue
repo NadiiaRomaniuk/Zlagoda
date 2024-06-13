@@ -96,7 +96,7 @@
               <q-input
                 v-model="user.surname"
                 label="Surname"
-                dense="dense"
+                dense
                 :rules="[(v) => v.length > 0 || 'Required']"
               ></q-input>
             </div>
@@ -104,7 +104,7 @@
               <q-input
                 v-model="user.name"
                 label="Name"
-                dense="dense"
+                dense
                 :rules="[(v) => v.length > 0 || 'Required']"
               ></q-input>
             </div>
@@ -112,15 +112,15 @@
               <q-input
                 v-model="user.patronymic"
                 label="Patronymic"
-                dense="dense"
-                lazy-rules="lazy-rules"
+                dense
+                lazy-rules
               ></q-input>
             </div>
             <div class="col-12 col-sm-3 col-lg-3">
               <q-input
                 v-model="user.city"
                 label="City"
-                dense="dense"
+                dense
                 :rules="[(v) => v.length > 0 || 'Required']"
               ></q-input>
             </div>
@@ -128,7 +128,7 @@
               <q-input
                 v-model="user.street"
                 label="Street"
-                dense="dense"
+                dense
                 :rules="[(v) => v.length > 0 || 'Required']"
               ></q-input>
             </div>
@@ -136,7 +136,7 @@
               <q-input
                 v-model="user.zipCode"
                 label="ZIP code"
-                dense="dense"
+                dense
                 :rules="[(v) => v.length > 0 || 'Required']"
               ></q-input>
             </div>
@@ -144,7 +144,7 @@
               <q-input
                 v-model="user.phoneNumber"
                 label="Phone"
-                dense="dense"
+                dense
                 :rules="[(v) => v.length > 0 || 'Required']"
               ></q-input>
             </div>
@@ -152,7 +152,7 @@
               <q-input
                 v-model.number="user.salary"
                 label="Salary"
-                dense="dense"
+                dense
                 :rules="[(v) => v > 0 || 'Required']"
               ></q-input>
             </div>
@@ -219,7 +219,7 @@
               <q-input
                 v-model="user.employeeId"
                 label="Login"
-                dense="dense"
+                dense
                 :readonly="!isNewUser"
                 :rules="[(v) => v.length > 0 || 'Required']"
               ></q-input>
@@ -268,22 +268,17 @@
                     user.password.length > 5))
               "
               @click="saveUser"
-              flat="flat"
-              round="round"
+              flat
+              round
               :icon="fasCheck"
               color="positive"
             ></q-btn>
-            <q-btn
-              @click="cancelEdit"
-              flat="flat"
-              round="round"
-              :icon="fasXmark"
-            ></q-btn>
+            <q-btn @click="cancelEdit" flat round :icon="fasXmark"></q-btn>
             <q-btn
               v-if="!isNewUser"
               @click="deleteUser"
-              flat="flat"
-              round="round"
+              flat
+              round
               :icon="fasTrash"
               color="negative"
             ></q-btn>
@@ -295,7 +290,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { api } from "boot/axios";
 import { useQuasar } from "quasar";
 import notify from "../notices";

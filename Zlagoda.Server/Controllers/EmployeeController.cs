@@ -11,11 +11,11 @@ namespace Zlagoda.Server.Controllers;
 [Authorize(Roles = "manager")]
 public class EmployeeController : ControllerBase
 {
-    private readonly ILogger<TestController> _logger;
+    private readonly ILogger<EmployeeController> _logger;
     private readonly JwtOptions _jwtOptions;
     private readonly Db _db;
 
-    public EmployeeController(ILogger<TestController> logger, IOptions<JwtOptions> jwtOptions, Db db)
+    public EmployeeController(ILogger<EmployeeController> logger, IOptions<JwtOptions> jwtOptions, Db db)
     {
         _logger = logger;
         _jwtOptions = jwtOptions.Value;

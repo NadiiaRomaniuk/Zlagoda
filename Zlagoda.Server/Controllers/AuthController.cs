@@ -16,10 +16,10 @@ namespace Zlagoda.Server.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly JwtOptions _jwtOptions;
-    private readonly ILogger<TestController> _logger;
+    private readonly ILogger<AuthController> _logger;
     private readonly Db _db;
 
-    public AuthController(IOptions<JwtOptions> jwtOptions, ILogger<TestController> logger, Db db)
+    public AuthController(IOptions<JwtOptions> jwtOptions, ILogger<AuthController> logger, Db db)
     {
         _jwtOptions = jwtOptions.Value;
         _logger = logger;

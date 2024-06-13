@@ -4,7 +4,7 @@
       <q-icon class="q-mx-sm" :name="fasRightToBracket" />Login
     </div>
     <transition
-      appear="appear"
+      appear
       enter-active-class="animated flipInX"
       leave-active-class="animated flipOutX"
     >
@@ -15,12 +15,7 @@
       >
         <q-card-section class="q-pa-xl">
           <q-form @submit="login" :disable="wait">
-            <q-input
-              v-model="username"
-              label="Login"
-              :disable="wait"
-              autofocus="autofocus"
-            >
+            <q-input v-model="username" label="Login" :disable="wait" autofocus>
               <template v-slot:prepend>
                 <q-icon :name="fasEnvelope"></q-icon>
               </template>
@@ -61,7 +56,7 @@
                   :icon="fasKey"
                   :loading="wait"
                   :disable="wait"
-                  no-caps="no-caps"
+                  no-caps
                 >
                   <template v-slot:loading>
                     <q-spinner class="on-left"></q-spinner>Login
