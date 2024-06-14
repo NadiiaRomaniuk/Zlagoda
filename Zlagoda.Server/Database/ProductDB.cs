@@ -13,14 +13,9 @@ public partial class Db
   p.id_product,
   p.product_name, 
   p.category_number,
-  c.category_name,
   p.characteristics
 FROM 
   Product p
-INNER JOIN 
-  Category c
-ON 
-  p.category_number = c.category_number
 WHERE 
   p.id_product = @id;
 ";
@@ -32,8 +27,10 @@ WHERE
                 {
                     var product = new Product
                     {
-                        ProductID = reader.GetInt32(0),
+                        ProductId = reader.GetInt32(0),
                         ProductName = reader.GetString(1),
+                        CategoryNumber = reader.GetInt32(2),
+                        ProductCharacteristics = reader.GetString(3),
                     };
                     return product;
                 }
@@ -58,14 +55,9 @@ WHERE
   p.id_product,
   p.product_name, 
   p.category_number,
-  c.category_name,
   p.characteristics
 FROM 
   Product p
-INNER JOIN 
-  Category c
-ON 
-  p.category_number = c.category_number;
 ";
             var command = new MySqlCommand(query, _connection);
             using (var reader = await command.ExecuteReaderAsync())
@@ -75,8 +67,10 @@ ON
                 {
                     var product = new Product
                     {
-                        ProductID = reader.GetInt32(0),
+                        ProductId = reader.GetInt32(0),
                         ProductName = reader.GetString(1),
+                        CategoryNumber = reader.GetInt32(2),
+                        ProductCharacteristics = reader.GetString(3),
                     };
                     list.Add(product);
                 }
@@ -118,11 +112,11 @@ SELECT LAST_INSERT_ID();";
             var query =
 @"UPDATE Product
 SET product_name = @product_name,
-    category_numbber = @category_number,
+    category_number = @category_number,
     characteristics = @characteristics
 WHERE id_product = @id_product";
             var command = new MySqlCommand(query, _connection);
-            command.Parameters.AddWithValue("@id_product", product.ProductID);
+            command.Parameters.AddWithValue("@id_product", product.ProductId);
             command.Parameters.AddWithValue("@product_name", product.ProductName);
             command.Parameters.AddWithValue("@category_number", product.CategoryNumber);
             command.Parameters.AddWithValue("@characteristics", product.ProductCharacteristics);

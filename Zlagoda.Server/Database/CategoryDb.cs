@@ -70,6 +70,33 @@ FROM Category";
         }
     }
 
+    public async Task<Dictionary<int, string>> GetCategoriesDict()
+    {
+        try
+        {
+            var query =
+@"SELECT
+  category_number,
+  category_name
+FROM Category";
+            var command = new MySqlCommand(query, _connection);
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                var dict = new Dictionary<int, string>();
+                while (await reader.ReadAsync())
+                {
+                    dict.Add(reader.GetInt32(0), reader.GetString(1));
+                }
+                return dict;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Db.GetCategories error");
+            return new Dictionary<int, string>();
+        }
+    }
+
     public async Task<int?> AddCategory(Category category)
     {
         try

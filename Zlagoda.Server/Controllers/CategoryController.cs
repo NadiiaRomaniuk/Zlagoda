@@ -24,6 +24,12 @@ public class CategoryController : ControllerBase
         return await _db.GetCategories();
     }
 
+    [HttpGet("dict")]
+    public async Task<Dictionary<int, string>> GetCategoriesDict()
+    {
+        return await _db.GetCategoriesDict();
+    }
+
     [HttpGet("{id}")]
     public async Task<Category?> GetCategory(int id)
     {

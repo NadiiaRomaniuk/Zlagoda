@@ -75,7 +75,7 @@
 
         <q-item to="/product" exact v-ripple v-if="auth.check('manager')">
           <q-item-section avatar>
-            <q-icon :name="fasList" />
+            <q-icon :name="fasIcons" />
           </q-item-section>
           <q-item-section avatar>
             <q-item-label>Product</q-item-label>
@@ -133,6 +133,7 @@ import {
   fasRightFromBracket,
   fasUserGroup,
   fasList,
+  fasIcons,
 } from "@quasar/extras/fontawesome-v6";
 
 defineOptions({
