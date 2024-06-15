@@ -19,6 +19,11 @@ const routes = [
         meta: { auth: "manager" },
       },
       {
+        path: "/customers",
+        component: () => import("pages/CustomersPage.vue"),
+        meta: { auth: "manager" },
+      },
+      {
         path: "/category",
         component: () => import("pages/CategoryPage.vue"),
         meta: { auth: "manager" },

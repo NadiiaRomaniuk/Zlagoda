@@ -64,6 +64,15 @@
           </q-item-section>
         </q-item>
 
+        <q-item to="/customers" exact v-ripple v-if="auth.check('manager')">
+          <q-item-section avatar>
+            <q-icon :name="fasAddressCard" />
+          </q-item-section>
+          <q-item-section avatar>
+            <q-item-label>Customers</q-item-label>
+          </q-item-section>
+        </q-item>
+
         <q-item to="/category" exact v-ripple v-if="auth.check('manager')">
           <q-item-section avatar>
             <q-icon :name="fasList" />
@@ -134,6 +143,7 @@ import {
   fasUserGroup,
   fasList,
   fasIcons,
+  fasAddressCard,
 } from "@quasar/extras/fontawesome-v6";
 
 defineOptions({

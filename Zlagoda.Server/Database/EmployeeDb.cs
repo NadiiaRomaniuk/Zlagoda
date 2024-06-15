@@ -70,7 +70,7 @@ FROM Employee WHERE id_employee = @id";
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Db.GetEmploee error");
+            _logger.LogError(ex, "Db.GetEmployee error");
             return null;
         }
     }
